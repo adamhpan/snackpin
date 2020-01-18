@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require("~/server/config/sequelize");
+const sequelize = require("../config/sequelize");
 
 const Youtuber = sequelize.define('youtuber', {
   // Model attributes are defined here
@@ -10,8 +10,11 @@ const Youtuber = sequelize.define('youtuber', {
     type: DataTypes.STRING
   }
 }, {
+  tableName: "youtuber",
   paranoid: true,
   timeStamps: true
 });
 
-export default Youtuber;
+sequelize.sync();
+
+module.exports = Youtuber;

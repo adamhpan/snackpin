@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require("~/server/config/sequelize");
-
-const Reaction = require("./reaction");
+const sequelize = require("../config/sequelize");
 
 const Snack = sequelize.define('snack', {
   // Model attributes are defined here
@@ -34,10 +32,11 @@ const Snack = sequelize.define('snack', {
     type: DataTypes.DECIMAL(10, 8)
   }
 }, {
+  tableName: "snack",
   paranoid: true,
   timeStamps: true
 });
 
-Snack.hasMany(Reaction)
+sequelize.sync();
 
-export default Snack;
+module.exports = Snack;

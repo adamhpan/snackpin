@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require("~/server/config/sequelize");
+const sequelize = require("../config/sequelize");
 
-const { Youtuber } = require("./youtuber")
-const { Snack } = require("./snack")
+const Youtuber = require("./youtuber")
+const Snack = require("./snack")
 
 const Reaction = sequelize.define('reaction', {
   // Model attributes are defined here
@@ -21,6 +21,7 @@ const Reaction = sequelize.define('reaction', {
     type: DataTypes.STRING
   }
 }, {
+  tableName: "reaction",
   paranoid: true,
   timeStamps: true
 });
@@ -28,4 +29,4 @@ const Reaction = sequelize.define('reaction', {
 Reaction.belongsTo(Youtuber)
 Reaction.belongsTo(Snack)
 
-export default Reaction;
+module.exports = Reaction;
