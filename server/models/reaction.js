@@ -15,7 +15,10 @@ const Reaction = sequelize.define('reaction', {
     type: DataTypes.INTEGER
   },
   thumbnail: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    get() {
+      return `http://i.ytimg.com/vi/${this.getDataValue("thumbnail")}/maxresdefault.jpg`
+    }
   },
   description: {
     type: DataTypes.STRING

@@ -18,6 +18,9 @@ const Snack = sequelize.define('snack', {
   city: {
     type: DataTypes.STRING
   },
+  state: {
+    type: DataTypes.STRING
+  },
   zipCode: {
     field: "zip_code",
     type: DataTypes.STRING
@@ -30,13 +33,28 @@ const Snack = sequelize.define('snack', {
   },
   longitude: {
     type: DataTypes.DECIMAL(10, 8)
+  },
+  address: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      let address = this.getDataValue('street1')
+
+      if(this.getDataValue('street2')) {
+        address += ' ' + this.getDataValue('street2')
+      }
+
+      address += ', ' + this.getDataValue('city')
+        + ', ' + this.getDataValue('state')
+        + ' ' + this.getDataValue('zipCode')
+        + ', ' + this.getDataValue('country')
+
+      return address;
+    }
   }
 }, {
   tableName: "snack",
   paranoid: true,
   timeStamps: true
 });
-
-sequelize.sync();
 
 module.exports = Snack;

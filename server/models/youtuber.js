@@ -15,6 +15,4 @@ const Youtuber = sequelize.define('youtuber', {
   timeStamps: true
 });
 
-sequelize.sync();
-
 module.exports = Youtuber;

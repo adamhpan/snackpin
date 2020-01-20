@@ -7,7 +7,7 @@
       </div>
       <SnackList></SnackList>
     </div>
-    <div class="col-md-8 h-100">
+    <div class="col-md-8 h-80 p-0">
       <SnackMap></SnackMap>
     </div>
   </div>

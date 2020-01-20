@@ -1,6 +1,6 @@
 <template>
   <div class="snack-list">
-    <div class="row snack border-top border-bottom py-2 px-0" v-for="snack in snacks" :key="snack.id">
+    <div class="row snack border-top border-bottom py-2 px-0" v-for="snack in allSnacks" :key="snack.id">
       <div class="col-sm-12">
         <div class="row">
           <div>
@@ -14,7 +14,7 @@
           <img :src="reaction.thumbnail" class="col-sm-4 p-0" alt=""/>
           <div class="col-sm-8">
             <b>{{reaction.name}}</b>
-            <p>{{reaction.description}}</p>
+            <p v-html="reaction.description"></p>
           </div>
         </div>
       </div>
@@ -27,36 +27,24 @@
 
 <script>
 import SnackSearch from "~/components/SnackSearch";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
+  // Note: data neds to be a function, not obj
   name: "SnackList",
   components: {
     SnackSearch
   },
-  data: function() {
-    return {
-      snacks: [{
-        id: 1,
-        name: "Fresh Prints",
-        address: "1234 broadway",
-        reactions: [{
-          id: 1,
-          name: "Worth It",
-          thumbnail: "http://i.ytimg.com/vi/ieAtWSh2i_Q/maxresdefault.jpg",
-          description: "Rating - $$$"
-        }]
-      }, {
-        id: 2,
-        name: "Fresh Prints",
-        address: "1234 broadway",
-        reactions: [{
-          id: 1,
-          name: "Worth It",
-          thumbnail: "http://i.ytimg.com/vi/ieAtWSh2i_Q/maxresdefault.jpg",
-          description: "Rating - $$$"
-        }]
-      }]
-    }
+  computed: {
+    ...mapGetters(["allSnacks"])
+  },
+  methods: {
+    ...mapActions(["getSnacks"])
+  },
+  created() {
+    this.getSnacks();
+  },
+  async fetch({store}) {
   }
 }
 </script>

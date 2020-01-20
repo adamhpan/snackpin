@@ -5,74 +5,71 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 
 export default {
   name: "SnackMap",
-  data () {
-    return {
-      markerCoordinates: [{
-        latitude: 51.501527,
-        longitude: -0.1921837,
-        info: "hello 1"
-      }, {
-        latitude: 51.505874,
-        longitude: -0.1838486,
-        info: "hello 2"
-      }, {
-        latitude: 51.4998973,
-        longitude: -0.202432,
-        info: "hello 3"
-      }]
-    }
+  computed: {
+    ...mapGetters(["allSnacks"])
   },
-  head () {
-    return {
-      script: [{
-        src: "https://maps.googleapis.com/maps/api/js?key=AIzaSyAco14QbuFMcvukYON-7_9AkJsnhlvy_FU",
-        body: true
-      }]
-    }
+  methods: {
+    ...mapMutations(["setSnackMarker"])
   },
   mounted() {
-    const element = document.getElementById("map")
-    const options = {
-      zoom: 14,
-      center: new google.maps.LatLng(51.501527,-0.1921837)
-    }
-    const map = new google.maps.Map(element, options);
+    const loadedGoogleMapsAPI = new Promise( (resolve,reject) => {
+      window['GoogleMapsInit'] = resolve;
 
-    let clickedInfowindow = null;
-    this.markerCoordinates.forEach((coord) => {
-      const position = new google.maps.LatLng(coord.latitude, coord.longitude);
+      let GMap = document.createElement('script');
 
-      const infowindow = new google.maps.InfoWindow({
-        content: coord.info
-      });
+      GMap.setAttribute('src',
+     `https://maps.googleapis.com/maps/api/js?key=AIzaSyAco14QbuFMcvukYON-7_9AkJsnhlvy_FU&libraries=places&callback=GoogleMapsInit`);
 
-      const marker = new google.maps.Marker({
-        position,
-        map
+      document.body.appendChild(GMap);
+    });
+
+    loadedGoogleMapsAPI.then(() => {
+      const element = document.getElementById("map")
+      const options = {
+        zoom: 12,
+        center: new google.maps.LatLng(34.10542200,-118.31871600)
+      }
+      const map = new google.maps.Map(element, options);
+
+      let clickedInfowindow = null;
+      this.allSnacks.forEach((snack) => {
+        const position = new google.maps.LatLng(snack.latitude, snack.longitude);
+
+        const infowindow = new google.maps.InfoWindow({
+          content: snack.info
+        });
+
+        const marker = new google.maps.Marker({
+          position,
+          map,
+          id: snack.id
+        })
+
+        marker.addListener('click', function() {
+          clickedInfowindow = infowindow;
+          infowindow.open(map, marker);
+        });
+
+        marker.addListener('mouseover', function() {
+          if(clickedInfowindow) {
+            clickedInfowindow.close();
+            clickedInfowindow = null;
+          }
+          infowindow.open(map, marker);
+        });
+
+        marker.addListener('mouseout', function() {
+          if(clickedInfowindow) {
+            return;
+          }
+          infowindow.close();
+        });
       })
-
-      marker.addListener('click', function() {
-        clickedInfowindow = infowindow;
-        infowindow.open(map, marker);
-      });
-
-      marker.addListener('mouseover', function() {
-        if(clickedInfowindow) {
-          clickedInfowindow.close();
-          clickedInfowindow = null;
-        }
-        infowindow.open(map, marker);
-      });
-
-      marker.addListener('mouseout', function() {
-        if(clickedInfowindow) {
-          return;
-        }
-        infowindow.close();
-      });
     })
   }
 }

@@ -3,6 +3,7 @@ const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
 const app = express()
 
+const routes = require("./routes");
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js')
 config.dev = process.env.NODE_ENV !== 'production'
@@ -21,6 +22,7 @@ async function start () {
     await nuxt.ready()
   }
 
+  app.use("/api", routes);
   // Give nuxt middleware to express
   app.use(nuxt.render)
 
