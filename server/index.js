@@ -1,3 +1,4 @@
+const bodyParser = require("body-parser");
 const express = require('express')
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
@@ -22,6 +23,8 @@ async function start () {
     await nuxt.ready()
   }
 
+  app.use(bodyParser.json({limit: "50mb"}));
+  app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
   app.use("/api", routes);
   // Give nuxt middleware to express
   app.use(nuxt.render)

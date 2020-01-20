@@ -1,6 +1,11 @@
 <template>
   <div class="snack-list">
-    <div class="row snack border-top border-bottom py-2 px-0" v-for="snack in allSnacks" :key="snack.id">
+    <div
+      class="row snack border-top border-bottom py-2 px-0"
+      v-for="snack in mapSnacks"
+      :key="snack.id"
+      @mouseenter="setActiveSnack(snack)"
+    >
       <div class="col-sm-12">
         <div class="row">
           <div>
@@ -10,7 +15,11 @@
             </p>
           </div>
         </div>
-        <div class="row" v-for="reaction in snack.reactions" :key="reaction.id">
+        <div
+          class="row"
+          v-for="reaction in snack.reactions"
+          :key="reaction.id"
+        >
           <img :src="reaction.thumbnail" class="col-sm-4 p-0" alt=""/>
           <div class="col-sm-8">
             <b>{{reaction.name}}</b>
@@ -27,7 +36,7 @@
 
 <script>
 import SnackSearch from "~/components/SnackSearch";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   // Note: data neds to be a function, not obj
@@ -36,13 +45,12 @@ export default {
     SnackSearch
   },
   computed: {
-    ...mapGetters(["allSnacks"])
+    ...mapGetters(["mapSnacks"])
   },
   methods: {
-    ...mapActions(["getSnacks"])
+    ...mapMutations(["setActiveSnack"])
   },
   created() {
-    this.getSnacks();
   },
   async fetch({store}) {
   }
