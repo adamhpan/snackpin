@@ -1,8 +1,12 @@
-const bodyParser = require("body-parser");
-const express = require('express')
-const consola = require('consola')
+const bodyParser        = require("body-parser");
+const express           = require('express')
+const consola           = require('consola')
 const { Nuxt, Builder } = require('nuxt')
+const passport          = require("./config/passport");
+const session           = require("express-session");
+
 const app = express()
+
 
 const routes = require("./routes");
 // Import and Set Nuxt.js options
@@ -23,8 +27,13 @@ async function start () {
     await nuxt.ready()
   }
 
-  app.use(bodyParser.json({limit: "50mb"}));
-  app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
+
+  app.use(session({ secret: 'keyboard cat' }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+
   app.use("/api", routes);
   // Give nuxt middleware to express
   app.use(nuxt.render)

@@ -11,14 +11,22 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/auth": "^4.8.5",
+    "@nuxtjs/axios": "^5.9.3",
     "axios": "^0.19.1",
+    "bcrypt-nodejs": "0.0.3",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cross-env": "^5.2.0",
     "express": "^4.16.4",
+    "express-session": "^1.17.0",
+    "js-cookie": "^2.2.1",
     "mysql2": "^2.1.0",
     "nuxt": "^2.0.0",
-    "sequelize": "^5.21.3"
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "sequelize": "^5.21.3",
+    "vuex-persistedstate": "^2.7.1"
   },
   "devDependencies": {
     "@nuxtjs/style-resources": "^1.0.0",

@@ -27,7 +27,9 @@
           </div>
         </div>
       </div>
-      <div class="favorite pr-2">
+      <div
+        @click="toggleFavorite(snack)"
+        class="favorite pr-2">
         <i class="far fa-heart"></i>
       </div>
     </div>
@@ -48,7 +50,8 @@ export default {
     ...mapGetters(["mapSnacks"])
   },
   methods: {
-    ...mapMutations(["setActiveSnack"])
+    ...mapMutations(["setActiveSnack"]),
+    ...mapActions(["toggleFavorite"])
   },
   created() {
   },
