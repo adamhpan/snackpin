@@ -17,6 +17,4 @@ const User = sequelize.define('user', {
   timeStamps: true
 });
 
-sequelize.sync()
-
 module.exports = User;

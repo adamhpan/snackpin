@@ -23,7 +23,6 @@ router.get("/snacks", async (req, res) => {
   if(req.query.mapBounds) {
     let { lat0, lat1, lng0, lng1 } = JSON.parse(req.query.mapBounds);
 
-    console.log(typeof req.query.mapBounds, lat0)
     let smaller = lat0 < lat1 ? lat0 : lat1;
     let larger = lat0 > lat1 ? lat0 : lat1;
     whereObj.latitude = {

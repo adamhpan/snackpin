@@ -1,8 +1,19 @@
 <template>
   <div class="snack-list">
+    <div class="favorite-toast">
+      <div class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="mr-auto">You need to be <nuxt-link to="login">logged in</nuxt-link> to save snacks</strong>
+          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    </div>
     <div
       class="row snack border-top border-bottom py-2 px-0"
       v-for="snack in mapSnacks"
+      :class="{hover: activeSnack == snack}"
       :key="snack.id"
       @mouseenter="setActiveSnack(snack)"
     >
@@ -20,7 +31,9 @@
           v-for="reaction in snack.reactions"
           :key="reaction.id"
         >
-          <img :src="reaction.thumbnail" class="col-sm-4 p-0" alt=""/>
+          <div class="col-sm-4 p-0">
+            <img :src="reaction.thumbnail" class="w-100" alt=""/>
+          </div>
           <div class="col-sm-8">
             <b>{{reaction.name}}</b>
             <p v-html="reaction.description"></p>
@@ -28,8 +41,10 @@
         </div>
       </div>
       <div
-        @click="toggleFavorite(snack)"
-        class="favorite pr-2">
+        @click="_toggleSavedSnack(snack)"
+        class="favorite pr-2"
+        :class="{ 'bg-red': snack.saved }"
+        >
         <i class="far fa-heart"></i>
       </div>
     </div>
@@ -47,20 +62,30 @@ export default {
     SnackSearch
   },
   computed: {
-    ...mapGetters(["mapSnacks"])
+    ...mapGetters(["mapSnacks", "activeSnack", "user"])
   },
   methods: {
     ...mapMutations(["setActiveSnack"]),
-    ...mapActions(["toggleFavorite"])
+    ...mapActions(["toggleSavedSnack"]),
+    _toggleSavedSnack(snack) {
+      if(!this.user) {
+        $('.toast').toast("show")
+        return;
+      }
+
+      this.toggleSavedSnack(snack);
+    }
   },
-  created() {
+  mounted() {
+    $('.toast').toast({
+      delay: 2000,
+      autohide: true
+    })
   },
-  async fetch({store}) {
-  }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .snack-list {
     min-height: 100%;
   }
@@ -69,8 +94,26 @@ export default {
     position: relative;
   }
 
+  .snack.hover {
+    background-color: rgba(255, 166, 0, 0.055);
+  }
+
   .snack .favorite {
     position: absolute;
     right: 0;
+    :hover {
+      cursor: pointer;
+    }
+  }
+
+  .favorite-toast {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .toast {
+    margin: 8px auto;
   }
 </style>

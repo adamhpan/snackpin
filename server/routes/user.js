@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 const passport = require("passport")
 
 const User = require("../models/user");
+const SnackUser = require("../models/snack-user");
 
 const router = express.Router();
 
@@ -31,7 +32,7 @@ router.post("/user", async (req, res) => {
   }
 });
 
-router.post("/user/login", async (req, res, next) => {
+router.post("/users/login", async (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if(err) {
       return res.status(401).json({
@@ -56,9 +57,46 @@ router.post("/user/login", async (req, res, next) => {
   })(req, res, next);
 })
 
-router.get('/user/logout', function(req, res){
+router.get('/users/logout', function(req, res){
   req.logout();
   res.status(200).json("User logged out.")
 });
+
+router.get("/users/:userId/snacks", async (req, res) => {
+  let userSnacks = await SnackUser.findAll({
+    where: {
+      userId: req.params.userId
+    }
+  })
+
+  res.status(200).json(userSnacks)
+})
+
+router.delete("/users/:userId/snacks/:snackId", async (req, res) => {
+  let snackUser = await SnackUser.findOne({
+    where: {
+      $and: [{
+        userId
+      }, {
+        snackId
+      }]
+    }
+  });
+
+  if(snackUser) {
+    snackUser.destroy();
+  }
+
+  res.status(200);
+});
+
+router.post("/users/:userId/snacks/:snackId", async (req, res) => {
+  let snackUser = await SnackUser.create({
+    userId: req.params.userId,
+    snackId: req.params.snackId
+  });
+
+  res.status(200).json(snackUser)
+})
 
 module.exports = router;

@@ -30,8 +30,8 @@ export default {
   },
   data() {
     return {
-      email: "",
-      password: ""
+      email: "adamhpan@gmail.com",
+      password: "123"
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-sm">
-    <a href="#" class="navbar-brand text-warning">
+    <a href="/" class="navbar-brand text-warning">
       <i class="fas fa-ice-cream"></i>
       Snackpin
     </a>

@@ -3,7 +3,7 @@
     <div class="snack-bar col-sm-6 col-md-4">
       <div class="search-panel py-2 border-bottom border-top d-flex">
         <SnackSearch></SnackSearch>
-        <button>Show Saved</button>
+        <button class="btn" @click="showSaved">Show Saved</button>
       </div>
       <SnackList></SnackList>
     </div>
@@ -19,12 +19,20 @@ import SnackList from "~/components/SnackList"
 import SnackSearch from "~/components/SnackSearch"
 import SnackMap from "~/components/SnackMap"
 
+import { mapActions } from "vuex";
+
 export default {
   components: {
     Logo,
     SnackList,
     SnackSearch,
     SnackMap
+  },
+  methods: {
+    ...mapActions(["getUserSnacks"]),
+    showSaved() {
+      this.getUserSnacks()
+    }
   }
 }
 </script>
