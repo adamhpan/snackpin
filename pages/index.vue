@@ -1,6 +1,6 @@
 <template>
   <div class="home row">
-    <div class="snack-bar col-sm-6 col-md-4">
+    <div class="snack-bar col-sm-6 col-md-4 p-0">
       <div class="search-panel py-2 border-bottom border-top d-flex">
         <SnackSearch></SnackSearch>
         <button class="btn" @click="showSaved">Show Saved</button>

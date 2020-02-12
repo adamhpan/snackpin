@@ -1,43 +1,41 @@
 <template>
   <div class="snack-list">
     <div
-      class="row snack border-top border-bottom py-2 px-0"
+      class="snack border-top border-bottom py-2"
       v-for="snack in mapSnacks"
       :class="{hover: activeSnack == snack}"
       :key="snack.id"
       @mouseenter="setActiveSnack(snack)"
     >
       <div class="col-sm-12">
-        <div class="row">
-          <div>
-            <b>{{snack.name}}</b>
-            <p>
-              {{snack.address}}
-            </p>
-          </div>
+        <div>
+          <b>{{snack.name}}</b>
+          <p>
+            {{snack.address}}
+          </p>
         </div>
         <div
           class="row"
           v-for="reaction in snack.reactions"
           :key="reaction.id"
         >
-          <div class="col-sm-4 p-0">
+          <div class="col-sm-4 pr-0">
             <img :src="reaction.thumbnail" class="w-100" alt=""/>
           </div>
           <div class="col-sm-8">
             <b>{{reaction.name}}</b>
             <p v-html="reaction.description"></p>
           </div>
+          <div
+            @click="_toggleSavedSnack(snack)"
+            class="favorite pr-2"
+            >
+            <i
+              class="fa-heart"
+              :class="{ far: !snack.saved, fas: snack.saved, 'text-danger': snack.saved }"
+            ></i>
+          </div>
         </div>
-      </div>
-      <div
-        @click="_toggleSavedSnack(snack)"
-        class="favorite pr-2"
-        >
-        <i
-          class="fa-heart"
-          :class="{ far: !snack.saved, fas: snack.saved, 'text-danger': snack.saved }"
-        ></i>
       </div>
     </div>
   </div>
@@ -68,7 +66,8 @@ export default {
 
 <style lang="scss" scoped>
   .snack-list {
-    min-height: 100%;
+    height: calc(100% - 112px);
+    overflow-y: scroll;
   }
 
   .snack {
@@ -82,6 +81,8 @@ export default {
   .snack .favorite {
     position: absolute;
     right: 0;
+    top: 0;
+
     :hover {
       cursor: pointer;
     }

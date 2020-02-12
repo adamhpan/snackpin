@@ -1,6 +1,6 @@
 <template>
   <div class="h-100">
-    <div id="map" class="w-100 h-100"></div>
+    <div id="map" class="w-100"></div>
   </div>
 </template>
 
@@ -27,7 +27,6 @@ export default {
         });
 
         newMarker.infowindow.open(map, newMarker)
-        console.log("found marker", newMarker)
       }
 
       if(oldActiveSnack) {
@@ -136,5 +135,6 @@ export default {
 #map {
   margin: 0 auto;
   background: gray;
+  height: calc(100% - 56px);
 }
 </style>

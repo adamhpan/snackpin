@@ -49,6 +49,7 @@ export const mutations = {
     })
 
     state.mapSnacks = snacks.map((snack) => {
+      console.log("snack", snack)
       snack.saved = savedSnackIds.includes(snack.id);
       return snack;
     });
@@ -113,6 +114,31 @@ export const actions = {
     }
   },
 
+  toast({}, toastMsg) {
+    let toast = this.$toast.show(toastMsg, {
+      iconPack: "fontawesome",
+      action : {
+        text: "CLOSE",
+        onClick : (e, toastObject) => {
+            toastObject.goAway(0);
+        }
+      },
+    });
+
+    let links = toast.el.getElementsByTagName('a');
+    for(let link of links) {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = e.target.getAttribute('href')
+
+        if (href && href[0] === '/') {
+          this.$router.push(href)
+        } else if (this.$ga) {
+          this.$ga('send', 'event', 'Outbound Link', 'click', target.href)
+        }
+      });
+    }
+  },
   async getMapSnacks({ commit, state }, queryString) {
     let snacks = await axios.get("/api/snacks", {
       params: {
@@ -167,26 +193,23 @@ export const actions = {
       }
     })
   },
-  async toggleSavedSnack({ commit, state }, snack) {
+  async toggleSavedSnack({ dispatch, commit, state }, snack) {
     if(!state.user) {
-      commit("toast", `
-        <div class="toast-header">
-          <strong class="mr-auto">You need to be <nuxt-link to="login">logged in</nuxt-link> to save snacks</strong>
-          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      `)
+      dispatch("toast", `<div>You need to be <a href='/login'">logged in</a> to save snacks</div>`)
 
       return;
     }
 
     if(snack.saved) {
       await axios.delete(`/api/users/${state.user.id}/snacks/${snack.id}`);
+
       commit("deleteSavedSnack", snack);
+      dispatch("toast", `<div class="mr-auto">Snack unsaved!</div>`);
     } else {
       await axios.post(`/api/users/${state.user.id}/snacks/${snack.id}`);
+
       commit("saveSnack", snack);
+      dispatch("toast", `<div class="mr-auto">Snack saved!</div>`);
     }
   },
   async getSavedSnacks({ commit, state }) {
