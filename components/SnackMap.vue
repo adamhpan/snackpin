@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     ...mapMutations(["setSnackMarker", "setMapBounds"]),
-    ...mapActions(["getMapSnacks"])
+    ...mapActions(["getMapSnacks", "loadSavedSnacks"])
   },
   watch: {
     activeSnack(newActiveSnack, oldActiveSnack) {
@@ -78,6 +78,9 @@ export default {
         });
       })
     }
+  },
+  beforeMount() {
+    this.loadSavedSnacks();
   },
   async mounted() {
     const loadedGoogleMapsAPI = new Promise( (resolve,reject) => {

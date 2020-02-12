@@ -14,7 +14,8 @@ export const state = () => ({
   },
   map: null,
   user: null,
-  signupError: ""
+  signupError: "",
+  toastMsg: ""
 });
 
 export const getters = {
@@ -30,6 +31,9 @@ export const getters = {
   signupError(state) {
     return state.signupError
   },
+  toastMsg(state) {
+    return state.toastMsg
+  },
   user(state) {
     return state.user
   }
@@ -40,14 +44,11 @@ export const mutations = {
     state.snacks = snacks;
   },
   setMapSnacks(state, snacks) {
-    console.log("state.savedSnacks", state.savedSnacks)
     let savedSnackIds = state.savedSnacks.map((savedSnack) => {
       return savedSnack.snackId;
     })
 
-    console.log("savedSnackIds", savedSnackIds)
     state.mapSnacks = snacks.map((snack) => {
-      console.log(savedSnackIds, snack.id,  savedSnackIds.includes(snack.id))
       snack.saved = savedSnackIds.includes(snack.id);
       return snack;
     });
@@ -65,7 +66,13 @@ export const mutations = {
     state.user = user
   },
   logout(state) {
-    state.user = null
+    state.user = null;
+
+    state.mapSnacks = state.mapSnacks.map((mapSnack) => {
+      mapSnack.saved = false;
+
+      return mapSnack;
+    })
   },
   setSavedSnacks(state, snacks) {
     state.savedSnacks = snacks;
@@ -75,7 +82,7 @@ export const mutations = {
       return savedSnack.id !== snack.id
     });
 
-    state.snacks = state.snacks.map((_snack) => {
+    state.mapSnacks = state.mapSnacks.map((_snack) => {
       if(_snack.id === snack.id) {
         _snack.saved = false;
       }
@@ -86,13 +93,16 @@ export const mutations = {
   saveSnack(state, snack) {
     state.savedSnacks.push(snack);
 
-    state.snacks = state.snacks.map((_snack) => {
+    state.mapSnacks = state.mapSnacks.map((_snack) => {
       if(_snack.id === snack.id) {
         _snack.saved = true;
       }
 
       return _snack;
     })
+  },
+  toast(state, toastMsg) {
+    state.toastMsg = toastMsg;
   }
 }
 
@@ -135,16 +145,14 @@ export const actions = {
 
     commit("logout");
   },
-  async loginUser({ state, commit }, user) {
-    commit("login", user);
-
+  async loadSavedSnacks({ state, commit }, user) {
     let savedSnacks = await axios.get(`/api/users/${state.user.id}/snacks`);
 
     if(savedSnacks.data.length) {
       commit("setSavedSnacks", savedSnacks.data);
     }
   },
-  async login({ dispatch }, { email, password }) {
+  async login({ commit }, { email, password }) {
     return new Promise(async (resolve, reject) => {
       try {
         let res = await axios.post("/api/users/login", {
@@ -152,7 +160,7 @@ export const actions = {
           password
         });
 
-        dispatch("loginUser", res.data);
+        commit("login", res.data);
         resolve(res.data);
       } catch(err) {
         reject(err);
@@ -161,7 +169,16 @@ export const actions = {
   },
   async toggleSavedSnack({ commit, state }, snack) {
     if(!state.user) {
-      throw new Error("User should be logged in")
+      commit("toast", `
+        <div class="toast-header">
+          <strong class="mr-auto">You need to be <nuxt-link to="login">logged in</nuxt-link> to save snacks</strong>
+          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      `)
+
+      return;
     }
 
     if(snack.saved) {

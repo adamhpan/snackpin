@@ -1,15 +1,5 @@
 <template>
   <div class="snack-list">
-    <div class="favorite-toast">
-      <div class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-          <strong class="mr-auto">You need to be <nuxt-link to="login">logged in</nuxt-link> to save snacks</strong>
-          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      </div>
-    </div>
     <div
       class="row snack border-top border-bottom py-2 px-0"
       v-for="snack in mapSnacks"
@@ -43,9 +33,11 @@
       <div
         @click="_toggleSavedSnack(snack)"
         class="favorite pr-2"
-        :class="{ 'bg-red': snack.saved }"
         >
-        <i class="far fa-heart"></i>
+        <i
+          class="fa-heart"
+          :class="{ far: !snack.saved, fas: snack.saved, 'text-danger': snack.saved }"
+        ></i>
       </div>
     </div>
   </div>
@@ -68,19 +60,8 @@ export default {
     ...mapMutations(["setActiveSnack"]),
     ...mapActions(["toggleSavedSnack"]),
     _toggleSavedSnack(snack) {
-      if(!this.user) {
-        $('.toast').toast("show")
-        return;
-      }
-
       this.toggleSavedSnack(snack);
     }
-  },
-  mounted() {
-    $('.toast').toast({
-      delay: 2000,
-      autohide: true
-    })
   },
 }
 </script>
@@ -104,16 +85,5 @@ export default {
     :hover {
       cursor: pointer;
     }
-  }
-
-  .favorite-toast {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
-
-  .toast {
-    margin: 8px auto;
   }
 </style>

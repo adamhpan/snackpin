@@ -73,9 +73,12 @@ router.get("/users/:userId/snacks", async (req, res) => {
 })
 
 router.delete("/users/:userId/snacks/:snackId", async (req, res) => {
+  let userId = parseInt(req.params.userId);
+  let snackId = parseInt(req.params.snackId);
+
   let snackUser = await SnackUser.findOne({
     where: {
-      $and: [{
+      [Op.and]: [{
         userId
       }, {
         snackId
@@ -87,7 +90,7 @@ router.delete("/users/:userId/snacks/:snackId", async (req, res) => {
     snackUser.destroy();
   }
 
-  res.status(200);
+  res.sendStatus(200);
 });
 
 router.post("/users/:userId/snacks/:snackId", async (req, res) => {
