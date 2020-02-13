@@ -1,12 +1,21 @@
 <template>
-  <div>
-    Signup
-    <input v-model="email" type="text" placeholder="email">
-    <input v-model="password" type="password" placeholder="password">
-    <input v-model="confirmPassword" type="password" placeholder="confirm password">
+  <form class="col-md-4 mx-auto mt-5">
+    <h1>Signup</h1>
+    <div class="form-group">
+      <label for="">Email</label>
+      <input class="form-control" v-model="email" type="text" placeholder="email">
+    </div>
+    <div class="form-group">
+      <label for="">Password</label>
+      <input class="form-control" v-model="password" type="password" placeholder="password">
+    </div>
+    <div class="form-group">
+      <label for="">Confirm password</label>
+      <input class="form-control" v-model="confirmPassword" type="password" placeholder="confirm password">
+    </div>
     <div>{{ signupError }}</div>
-    <button @click="onClickSignup">Signup</button>
-  </div>
+    <button class="btn btn-warning" @click="onClickSignup">Signup</button>
+  </form>
 </template>
 
 <script>

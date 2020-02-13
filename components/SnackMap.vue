@@ -99,7 +99,8 @@ export default {
       const element = document.getElementById("map")
       const options = {
         zoom: 12,
-        center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+        center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+        disableDefaultUI: true,
       }
 
       map = new google.maps.Map(element, options);

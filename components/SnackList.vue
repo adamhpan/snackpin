@@ -24,7 +24,9 @@
           :key="reaction.id"
         >
           <div class="col-sm-4 pr-0">
-            <img :src="reaction.thumbnail" class="w-100" alt=""/>
+            <a target="_blank" v-bind:href="reaction.video">
+              <img :src="reaction.thumbnail" class="w-100" alt=""/>
+            </a>
           </div>
           <div class="col-sm-8">
             <b>{{reaction.name}}</b>

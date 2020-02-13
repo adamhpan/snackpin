@@ -20,6 +20,12 @@ const Reaction = sequelize.define('reaction', {
       return `http://i.ytimg.com/vi/${this.getDataValue("thumbnail")}/maxresdefault.jpg`
     }
   },
+  video: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return `https://www.youtube.com/watch?v=${this.getDataValue("thumbnail")}`
+    }
+  },
   description: {
     type: DataTypes.STRING
   }

@@ -1,10 +1,16 @@
 <template>
-  <div>
-    Login
-    <input v-model="email" type="text" placeholder="email">
-    <input v-model="password" type="password" placeholder="password">
-    <button @click="onClick">Login</button>
-  </div>
+  <form class="col-md-4 mx-auto mt-5">
+    <h1>Login</h1>
+    <div class="form-group">
+      <label for="">Email</label>
+      <input class="form-control" v-model="email" type="email" placeholder="email">
+    </div>
+    <div class="form-group">
+      <label for="">Password</label>
+      <input class="form-control" v-model="password" type="password" placeholder="password">
+    </div>
+    <button class="btn btn-warning text-white" @click="onClick">Login</button>
+  </form>
 </template>
 
 <script>
