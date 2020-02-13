@@ -38,13 +38,18 @@ export default {
       }
     },
     mapSnacks() {
+      for(let marker of markers) {
+        marker.setMap(null);
+      }
+
       let clickedInfowindow = null;
 
       this.mapSnacks.forEach((snack) => {
         const position = new google.maps.LatLng(snack.latitude, snack.longitude);
 
         const infowindow = new google.maps.InfoWindow({
-          content: `<div>${snack.name}</div><div>${snack.address}</div>`
+          content: `<strong>${snack.name}</strong><div>${snack.address}</div>`,
+          disableAutoPan : true
         });
 
         const marker = new google.maps.Marker({

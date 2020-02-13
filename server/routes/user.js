@@ -1,10 +1,13 @@
-const bcrypt = require("bcryptjs");
-const express = require("express");
-const { Op } = require("sequelize");
+const bcrypt   = require("bcryptjs");
+const express  = require("express");
+const { Op }   = require("sequelize");
 const passport = require("passport")
 
-const User = require("../models/user");
+const User      = require("../models/user");
+const Reaction  = require("../models/reaction");
+const Snack     = require("../models/snack");
 const SnackUser = require("../models/snack-user");
+const Youtuber  = require("../models/youtuber");
 
 const router = express.Router();
 
@@ -63,10 +66,22 @@ router.get('/users/logout', function(req, res){
 });
 
 router.get("/users/:userId/snacks", async (req, res) => {
+  Snack.hasMany(Reaction);
+
   let userSnacks = await SnackUser.findAll({
     where: {
-      userId: req.params.userId
-    }
+      userId: 1
+    },
+    include: [{
+      model: Snack,
+      include: [{
+        model: Reaction
+      }]
+    }]
+  });
+
+  userSnacks = userSnacks.map((userSnack) => {
+    return userSnack.snack.toJSON();
   })
 
   res.status(200).json(userSnacks)

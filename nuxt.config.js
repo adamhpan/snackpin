@@ -45,7 +45,7 @@ module.exports = {
   ],
   toast: {
     position: 'top-center',
-    duration: 2000
+    duration: 3000
   },
   styleResources: {
     scss: [

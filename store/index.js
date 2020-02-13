@@ -15,7 +15,8 @@ export const state = () => ({
   map: null,
   user: null,
   signupError: "",
-  toastMsg: ""
+  toastMsg: "",
+  showingSavedSnacks: false
 });
 
 export const getters = {
@@ -34,6 +35,9 @@ export const getters = {
   toastMsg(state) {
     return state.toastMsg
   },
+  showingSavedSnacks(state) {
+    return state.showingSavedSnacks
+  },
   user(state) {
     return state.user
   }
@@ -44,15 +48,7 @@ export const mutations = {
     state.snacks = snacks;
   },
   setMapSnacks(state, snacks) {
-    let savedSnackIds = state.savedSnacks.map((savedSnack) => {
-      return savedSnack.snackId;
-    })
-
-    state.mapSnacks = snacks.map((snack) => {
-      console.log("snack", snack)
-      snack.saved = savedSnackIds.includes(snack.id);
-      return snack;
-    });
+    state.mapSnacks = snacks;
   },
   setActiveSnack(state, snack) {
     state.activeSnack = snack;
@@ -62,6 +58,9 @@ export const mutations = {
   },
   setSignupError(state, err) {
     state.signupError = err;
+  },
+  setShowingSavedSnacks(state, showingSavedSnacks) {
+    state.showingSavedSnacks = showingSavedSnacks;
   },
   login(state, user) {
     state.user = user
@@ -83,27 +82,20 @@ export const mutations = {
       return savedSnack.id !== snack.id
     });
 
-    state.mapSnacks = state.mapSnacks.map((_snack) => {
-      if(_snack.id === snack.id) {
-        _snack.saved = false;
-      }
-
-      return _snack;
+    let targetSnack = state.mapSnacks.find((_snack) => {
+      return _snack.id === snack.id;
     })
+
+    targetSnack.saved = false;
   },
   saveSnack(state, snack) {
     state.savedSnacks.push(snack);
 
-    state.mapSnacks = state.mapSnacks.map((_snack) => {
-      if(_snack.id === snack.id) {
-        _snack.saved = true;
-      }
-
-      return _snack;
+    let targetSnack = state.mapSnacks.find((_snack) => {
+      return _snack.id === snack.id;
     })
-  },
-  toast(state, toastMsg) {
-    state.toastMsg = toastMsg;
+
+    targetSnack.saved = true;
   }
 }
 
@@ -139,7 +131,31 @@ export const actions = {
       });
     }
   },
-  async getMapSnacks({ commit, state }, queryString) {
+  async getMapSnacks({ dispatch, state }, queryString) {
+    if(state.showingSavedSnacks) {
+      dispatch("showSavedSnacks");
+    } else if(queryString) {
+      dispatch("showQuerySnacks", queryString);
+    } else {
+      dispatch("showInBoundsSnacks")
+    }
+  },
+  async showInBoundsSnacks({ commit, state }) {
+    let snacks = await axios.get("/api/snacks", {
+      params: {
+        mapBounds: state.mapBounds
+      }
+    });
+
+    snacks = initializeSnacks(snacks.data, state.savedSnacks, state.mapBounds);
+
+    if(snacks.length) {
+      commit("setMapSnacks", snacks);
+    } else {
+      commit("setMapSnacks", []);
+    }
+  },
+  async showQuerySnacks({ commit, state }, queryString) {
     let snacks = await axios.get("/api/snacks", {
       params: {
         youtuber: queryString,
@@ -147,9 +163,21 @@ export const actions = {
       }
     });
 
-    if(snacks.data.length) {
-      commit("setMapSnacks", snacks.data);
+    snacks = initializeSnacks(snacks.data, state.savedSnacks, state.mapBounds);
+
+    if(snacks.length) {
+      commit("setMapSnacks", snacks);
+    } else {
+      commit("setMapSnacks", []);
     }
+  },
+  async showSavedSnacks({ commit, state }) {
+    let savedSnacks = await axios.get(`/api/users/${state.user.id}/snacks`);
+
+    let mapSnacks = initializeSnacks(savedSnacks.data, savedSnacks.data, state.mapBounds);
+
+    console.log(mapSnacks)
+    commit("setMapSnacks", mapSnacks);
   },
   async signup({ commit, dispatch }, { email, password }) {
     return new Promise(async (resolve) => {
@@ -171,7 +199,11 @@ export const actions = {
 
     commit("logout");
   },
-  async loadSavedSnacks({ state, commit }, user) {
+  async loadSavedSnacks({ state, commit }) {
+    if(!state.user) {
+      return;
+    }
+
     let savedSnacks = await axios.get(`/api/users/${state.user.id}/snacks`);
 
     if(savedSnacks.data.length) {
@@ -221,4 +253,24 @@ export const actions = {
       commit("setSavedSnacks", savedSnacks.data);
     }
   }
+}
+
+function snackWithinMapBounds(snack, mapBounds) {
+  let { latitude, longitude } = snack;
+  let { lat0, lat1, lng0, lng1 } = mapBounds;
+
+  return latitude > Math.min(lat0, lat1) && latitude < Math.max(lat0, lat1) && longitude > Math.min(lng0, lng1) && longitude < Math.max(lng0, lng1);
+}
+
+let initializeSnacks = (snacks, savedSnacks = [], mapBounds = {}) => {
+  let savedSnackIds = savedSnacks.map((savedSnack) => {
+    return savedSnack.id;
+  })
+
+  return snacks.map((snack) => {
+    snack.withinMapBounds = snackWithinMapBounds(snack, mapBounds);
+    snack.saved = savedSnackIds.includes(snack.id);
+
+    return snack
+  })
 }

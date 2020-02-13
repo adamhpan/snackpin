@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require("../config/sequelize");
 
+const Snack = require("./snack")
+
 const SnackUser = sequelize.define('snackUser', {
   snackId: {
     field: "snack_id",
@@ -16,6 +18,6 @@ const SnackUser = sequelize.define('snackUser', {
   timeStamps: true
 });
 
-sequelize.sync();
+SnackUser.belongsTo(Snack);
 
 module.exports = SnackUser;

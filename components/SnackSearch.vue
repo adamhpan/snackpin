@@ -1,7 +1,11 @@
 <template>
   <div class="snack-search">
-    <i class="fal fa-search"></i>
-    <input @input="searchSnacks($event)" type="text">
+    <div class="form-inline">
+      <label class="pr-2" for="inputSearch">
+        <i class="fal fa-search"></i>
+      </label>
+      <input @input="searchSnacks($event)" class="form-control" type="text">
+    </div>
   </div>
 </template>
 

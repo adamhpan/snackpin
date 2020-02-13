@@ -3,7 +3,10 @@
     <div
       class="snack border-top border-bottom py-2"
       v-for="snack in mapSnacks"
-      :class="{hover: activeSnack == snack}"
+      :class="{
+        hover: activeSnack == snack,
+        'outside-map-bounds': !snack.withinMapBounds
+      }"
       :key="snack.id"
       @mouseenter="setActiveSnack(snack)"
     >
@@ -38,6 +41,7 @@
         </div>
       </div>
     </div>
+    <p class="pt-4 text-center" v-if="!mapSnacks.length">There isn't anything in this area.</p>
   </div>
 </template>
 
@@ -86,5 +90,9 @@ export default {
     :hover {
       cursor: pointer;
     }
+  }
+
+  .outside-map-bounds {
+    opacity: 0.4;
   }
 </style>
