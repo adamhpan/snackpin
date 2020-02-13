@@ -1,5 +1,5 @@
 <template>
-  <form class="col-md-4 mx-auto mt-5">
+  <div class="col-md-4 mx-auto mt-5">
     <h1>Signup</h1>
     <div class="form-group">
       <label for="">Email</label>
@@ -15,7 +15,7 @@
     </div>
     <div>{{ signupError }}</div>
     <button class="btn btn-warning" @click="onClickSignup">Signup</button>
-  </form>
+  </div>
 </template>
 
 <script>
