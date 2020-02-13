@@ -1,8 +1,9 @@
 <template>
-  <div class="snack-list">
+  <div class="snack-list" id="snack-list">
     <div
       class="snack border-top border-bottom py-2"
       v-for="snack in mapSnacks"
+      :id="'snack-scroll-' + snack.id"
       :class="{
         hover: activeSnack == snack,
         'outside-map-bounds': !snack.withinMapBounds

@@ -7,7 +7,7 @@
 <script>
 let map = null;
 let markers = [];
-
+import VueScrollTo from "vue-scrollto";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 
 export default {
@@ -16,7 +16,7 @@ export default {
     ...mapGetters(["mapSnacks", "activeSnack"])
   },
   methods: {
-    ...mapMutations(["setSnackMarker", "setMapBounds"]),
+    ...mapMutations(["setSnackMarker", "setMapBounds", "setActiveSnack"]),
     ...mapActions(["getMapSnacks", "loadSavedSnacks"])
   },
   watch: {
@@ -56,29 +56,24 @@ export default {
           position,
           map,
           id: snack.id,
-          infowindow
+          infowindow,
+          snack
         });
 
         markers.push(marker)
 
-        marker.addListener('click', function() {
-          clickedInfowindow = infowindow;
-          infowindow.open(map, marker);
-        });
+        marker.addListener('mouseover', () => {
+          VueScrollTo.scrollTo(`#snack-scroll-${snack.id}`, 200, {
+            container: '.snack-list',
+            easing: 'ease-in',
+            offset: -60,
+            force: true,
+            cancelable: true,
+            x: false,
+            y: true
+          });
 
-        marker.addListener('mouseover', function() {
-          if(clickedInfowindow) {
-            clickedInfowindow.close();
-            clickedInfowindow = null;
-          }
-          infowindow.open(map, marker);
-        });
-
-        marker.addListener('mouseout', function() {
-          if(clickedInfowindow) {
-            return;
-          }
-          infowindow.close();
+          this.setActiveSnack(marker.snack);
         });
       })
     }
