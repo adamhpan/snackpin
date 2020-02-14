@@ -17,7 +17,7 @@ const Reaction = sequelize.define('reaction', {
   thumbnail: {
     type: DataTypes.STRING,
     get() {
-      return `http://i.ytimg.com/vi/${this.getDataValue("thumbnail")}/maxresdefault.jpg`
+      return `https://i.ytimg.com/vi/${this.getDataValue("thumbnail")}/maxresdefault.jpg`
     }
   },
   video: {
