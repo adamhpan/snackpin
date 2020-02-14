@@ -82,15 +82,15 @@ export default {
     this.loadSavedSnacks();
   },
   async mounted() {
-    const loadedGoogleMapsAPI = new Promise( (resolve,reject) => {
-      window['GoogleMapsInit'] = resolve;
+    const loadedGoogleMapsAPI = new Promise((resolve,reject) => {
+      if(!window['GoogleMapsInit']) {
+        window['GoogleMapsInit'] = resolve;
 
-      let GMap = document.createElement('script');
+        let GMap = document.createElement('script');
+        GMap.setAttribute('src', `https://maps.googleapis.com/maps/api/js?key=AIzaSyAco14QbuFMcvukYON-7_9AkJsnhlvy_FU&libraries=places&callback=GoogleMapsInit`);
 
-      GMap.setAttribute('src',
-     `https://maps.googleapis.com/maps/api/js?key=AIzaSyAco14QbuFMcvukYON-7_9AkJsnhlvy_FU&libraries=places&callback=GoogleMapsInit`);
-
-      document.body.appendChild(GMap);
+        document.body.appendChild(GMap);
+      }
     });
 
     let loadMapPosition = async (position) => {
