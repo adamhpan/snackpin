@@ -1,20 +1,25 @@
 <template>
   <div class="col-md-4 mx-auto mt-5">
     <h1>Signup</h1>
-    <div class="form-group">
-      <label for="">Email</label>
-      <input class="form-control" v-model="email" type="text" placeholder="email">
+    <div v-if="signupError" class="alert alert-danger" role="alert">
+      {{signupError}}
     </div>
-    <div class="form-group">
-      <label for="">Password</label>
-      <input class="form-control" v-model="password" type="password" placeholder="password">
-    </div>
-    <div class="form-group">
-      <label for="">Confirm password</label>
-      <input class="form-control" v-model="confirmPassword" type="password" placeholder="confirm password">
-    </div>
-    <div>{{ signupError }}</div>
-    <button class="btn btn-warning" @click="onClickSignup">Signup</button>
+    <br v-else>
+    <form @submit="onClickSignup">
+      <div class="form-group">
+        <label for="">Email</label>
+        <input class="form-control" v-model="email" type="email" required>
+      </div>
+      <div class="form-group">
+        <label for="">Password</label>
+        <input class="form-control" v-model="password" type="password" required>
+      </div>
+      <div class="form-group">
+        <label for="">Confirm password</label>
+        <input class="form-control" v-model="confirmPassword" type="password" required>
+      </div>
+      <button class="btn btn-warning text-white">Signup</button>
+    </form>
   </div>
 </template>
 
@@ -32,7 +37,7 @@ export default {
     }
   },
   created() {
-    this.setSignupError("")
+    this.setSignupError("");
   },
   computed: {
     ...mapGetters(["signupError"])
@@ -40,9 +45,16 @@ export default {
   methods: {
     ...mapMutations(["setSignupError"]),
     ...mapActions(["createUser", "signup"]),
-    onClickSignup() {
+    onClickSignup(e) {
+      e.preventDefault();
+
+      if(this.password.length < 8) {
+        this.setSignupError("Use 8 characters or more for your password.")
+        return;
+      }
+
       if(this.password !== this.confirmPassword) {
-        // this.signupError = "Passwords don't match."
+        this.setSignupError("Passwords don't match.")
         return;
       }
 
@@ -50,7 +62,7 @@ export default {
         email: this.email,
         password: this.password
       }).then(() => {
-        this.$router.go("/")
+        this.$router.push("/");
       })
     }
   }

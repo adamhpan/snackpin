@@ -1,13 +1,14 @@
 <template>
   <div class="col-md-4 mx-auto mt-5">
     <h1>Login</h1>
+    <br>
     <div class="form-group">
       <label for="">Email</label>
-      <input class="form-control" v-model="email" type="email" placeholder="email">
+      <input class="form-control" v-model="email" type="email">
     </div>
     <div class="form-group">
       <label for="">Password</label>
-      <input class="form-control" v-model="password" type="password" placeholder="password">
+      <input class="form-control" v-model="password" type="password">
     </div>
     <button class="btn btn-warning text-white" @click="onClick">Login</button>
   </div>
@@ -36,8 +37,8 @@ export default {
   },
   data() {
     return {
-      email: "adamhpan@gmail.com",
-      password: "123"
+      email: "",
+      password: ""
     }
   }
 }

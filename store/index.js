@@ -187,10 +187,11 @@ export const actions = {
           password: password
         });
 
-        dispatch("login", res.data);
+        dispatch("login", { email, password });
         resolve(res.data)
       } catch(err) {
         commit("setSignupError", err.response.data.error);
+        reject(err)
       }
     })
   },
