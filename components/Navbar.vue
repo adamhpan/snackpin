@@ -1,9 +1,9 @@
 <template>
   <nav class="navbar navbar-expand-sm">
-    <a href="/" class="navbar-brand text-warning">
+    <nuxt-link to="/" class="navbar-brand text-warning">
       <i class="fas fa-ice-cream"></i>
       Snackpin
-    </a>
+    </nuxt-link>
 
     <ul class="navbar-nav ml-auto">
       <li v-if="this.user" class="nav-item">
