@@ -7,7 +7,7 @@
 
     <ul class="navbar-nav ml-auto">
       <li v-if="this.user" class="nav-item">
-        <a href="/" class="nav-link" @click="logout">Logout</a>
+        <a href="" class="nav-link" @click.prevent="logout">Logout</a>
       </li>
       <li v-if="!this.user" class="nav-item active">
         <nuxt-link class="nav-link" to="login">Login</nuxt-link>
@@ -73,6 +73,8 @@ export default {
   methods: {
     ...mapActions(["logout", "toast"]),
     async sendFeedback(e) {
+      e.preventDefault();
+
       axios.post("/api/feedback", {
         feedbackType: this.feedbackType,
         feedback: this.feedback
@@ -82,8 +84,6 @@ export default {
       this.toast("Thanks for your feedback!");
       this.feedbackType = "";
       this.feedback = "";
-
-      e.preventDefault();
     }
   }
 }

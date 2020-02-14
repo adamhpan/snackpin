@@ -15,6 +15,7 @@ export const state = () => ({
   map: null,
   user: null,
   signupError: "",
+  loginError: "",
   toastMsg: "",
   showingSavedSnacks: false
 });
@@ -31,6 +32,9 @@ export const getters = {
   },
   signupError(state) {
     return state.signupError
+  },
+  loginError(state) {
+    return state.loginError
   },
   toastMsg(state) {
     return state.toastMsg
@@ -58,6 +62,9 @@ export const mutations = {
   },
   setSignupError(state, err) {
     state.signupError = err;
+  },
+  setLoginError(state, err) {
+    state.loginError = err;
   },
   setShowingSavedSnacks(state, showingSavedSnacks) {
     state.showingSavedSnacks = showingSavedSnacks;
@@ -190,13 +197,13 @@ export const actions = {
         dispatch("login", { email, password });
         resolve(res.data)
       } catch(err) {
-        commit("setSignupError", err.response.data.error);
+        commit("setSignupError", err.response.data);
         reject(err)
       }
     })
   },
   async logout({ commit }) {
-    await axios.get("/api/users/logout");
+    axios.get("/api/users/logout");
 
     commit("logout");
   },
@@ -222,7 +229,8 @@ export const actions = {
         commit("login", res.data);
         resolve(res.data);
       } catch(err) {
-        reject(err);
+        commit("setLoginError", err.response.data);
+        reject(err.response.data);
       }
     })
   },

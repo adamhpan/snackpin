@@ -38,19 +38,11 @@ router.post("/user", async (req, res) => {
 router.post("/users/login", async (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if(err) {
-      return res.status(401).json({
-        error: {
-          message: "Wrong email/password."
-        }
-      })
+      return res.status(401).json("Wrong email/password.");
     }
 
     if(!user) {
-      return res.status(401).json({
-        error: {
-          message: "No user found."
-        }
-      })
+      return res.status(401).json("Wrong email/password.");
     }
 
     req.logIn(user, (err) => {
